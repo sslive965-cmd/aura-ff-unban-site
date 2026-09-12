@@ -1,122 +1,470 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FF Unban Request — AURA</title>
-<meta name="description" content="Free Fire account assistance and appeal guidance.">
-<style>
-:root{--bg:#05060a;--card:#0c1018;--line:#202838;--text:#f5f7fb;--muted:#9ba7b9;--accent:#7c5cff;--accent2:#00e5ff;--ok:#35d07f}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:var(--text);background:
-radial-gradient(circle at 20% 0%,#1a1240 0,transparent 35%),radial-gradient(circle at 90% 20%,#003744 0,transparent 30%),var(--bg);min-height:100vh}
-.wrap{max-width:980px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}
-.brand{font-weight:900;letter-spacing:.12em}.badge{font-size:12px;color:#b9c4d6;border:1px solid var(--line);padding:8px 11px;border-radius:999px}
-.hero{text-align:center;padding:28px 0 22px}.hero h1{font-size:clamp(32px,7vw,62px);margin:0 0 10px}.hero p{color:var(--muted);margin:0 auto;max-width:650px}
-.card{background:linear-gradient(180deg,#0e131d,#090d14);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 18px 60px #0008;margin-top:18px}
-label{display:block;color:#c9d2df;font-size:13px;margin-bottom:8px}input,select{width:100%;background:#070a10;color:white;border:1px solid #2b3547;border-radius:13px;padding:14px;font-size:16px;outline:none}input:focus,select:focus{border-color:var(--accent)}
-.row{display:grid;grid-template-columns:1fr 2fr;gap:12px}.btn{border:0;border-radius:13px;padding:14px 18px;font-weight:800;cursor:pointer;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#061016;width:100%;margin-top:12px}.btn.secondary{background:#121925;color:#fff;border:1px solid #2a3546}
-.status{margin-top:12px;color:var(--muted);font-size:13px;min-height:20px}.profile{display:none;margin-top:18px}.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:14px;background:#090d14;border:1px solid var(--line);border-radius:14px}.stat small{display:block;color:var(--muted);margin-bottom:5px}.stat b{font-size:16px}
-.pay{display:none}.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}.qr{width:min(100%,320px);display:block;margin:auto;border-radius:14px;background:white;padding:8px}
-.notice{font-size:12px;line-height:1.6;color:#9eabbb}.official{color:#9ddcff}.footer{padding:28px 0 10px;text-align:center;color:#7f8b9c;font-size:12px}
-@media(max-width:650px){.row,.pay-grid{grid-template-columns:1fr}.profile-grid{grid-template-columns:1fr 1fr}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA • FF SUPPORT</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #24105c 0%, #090616 45%, #03030a 100%);
+      color: #fff;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #8f7cff;
+      text-shadow: 0 0 20px #6c4cff;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 12px;
+      border: 1px solid #684cff;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #bcb2ff;
+    }
+
+    .card {
+      background: rgba(12, 9, 28, 0.92);
+      border: 1px solid rgba(132, 102, 255, 0.35);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 30px rgba(77, 45, 180, 0.18);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .sub {
+      color: #aaa4c4;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      color: #c8c2df;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #3d3560;
+      background: #090714;
+      color: white;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    input:focus, select:focus {
+      border-color: #8064ff;
+    }
+
+    button, .button {
+      width: 100%;
+      border: 0;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .primary {
+      background: linear-gradient(90deg, #6b42ff, #9b6cff);
+      color: white;
+      box-shadow: 0 0 22px rgba(118, 74, 255, 0.3);
+    }
+
+    .telegram {
+      background: #229ed9;
+      color: white;
+    }
+
+    .secondary {
+      background: #17132b;
+      color: #cfc8ff;
+      border: 1px solid #3e3563;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status {
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 15px;
+      background: #100d20;
+      border: 1px solid #383052;
+      color: #cfc9e9;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .profile {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat {
+      background: #0b0818;
+      border: 1px solid #292341;
+      border-radius: 12px;
+      padding: 13px;
+    }
+
+    .stat span {
+      display: block;
+      color: #85809d;
+      font-size: 11px;
+      margin-bottom: 5px;
+    }
+
+    .stat strong {
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .payment-box {
+      text-align: center;
+    }
+
+    .fee {
+      font-size: 34px;
+      font-weight: 900;
+      margin: 12px 0;
+      color: #a891ff;
+    }
+
+    .upi {
+      background: #090714;
+      border: 1px dashed #51477b;
+      padding: 13px;
+      border-radius: 10px;
+      margin: 15px 0;
+      word-break: break-all;
+    }
+
+    .qr {
+      width: 210px;
+      max-width: 100%;
+      border-radius: 14px;
+      background: white;
+      padding: 8px;
+      margin: 10px auto;
+      display: block;
+    }
+
+    .warning {
+      font-size: 12px;
+      color: #a9a2bd;
+      line-height: 1.6;
+      margin-top: 15px;
+    }
+
+    .success {
+      color: #9ff0c2;
+    }
+
+    @media (max-width: 500px) {
+      .profile {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="top"><div class="brand">AURA • FF SUPPORT</div><div class="badge">INDIA · SECURE</div></div>
 
-  <section class="hero">
-    <h1>ID Unban Request</h1>
-    <p>Account assistance, player lookup and official appeal guidance.</p>
-  </section>
+<div class="container">
 
-  <section class="card">
-    <div class="row">
-      <div><label>Region</label><select id="region"><option value="ind">India</option><option value="sg">Singapore</option><option value="br">Brazil</option></select></div>
-      <div><label>Free Fire UID</label><input id="uid" inputmode="numeric" maxlength="15" placeholder="Enter 5–15 digit UID"></div>
-    </div>
-    <button class="btn" id="check">CHECK ID</button>
-    <div class="status" id="status"></div>
+  <div class="header">
+    <div class="logo">AURA • FF SUPPORT</div>
+    <div class="badge">INDIA · SUPPORT</div>
+  </div>
 
-    <div class="profile" id="profile">
-      <h2 id="nickname">Player</h2>
-      <div class="profile-grid">
-        <div class="stat"><small>UID</small><b id="puid">—</b></div>
-        <div class="stat"><small>Level</small><b id="level">—</b></div>
-        <div class="stat"><small>Rank</small><b id="rank">—</b></div>
-        <div class="stat"><small>Region</small><b id="pregion">—</b></div>
-        <div class="stat"><small>Likes</small><b id="likes">—</b></div>
-        <div class="stat"><small>Guild</small><b id="clan">—</b></div>
+  <!-- UID CHECK -->
+  <div class="card">
+
+    <h1>ID Unban Assistance</h1>
+
+    <p class="sub">
+      Enter your Free Fire UID to check whether the ID format is valid
+      and continue to assistance.
+    </p>
+
+    <label>PLAYER UID</label>
+    <input
+      id="uid"
+      type="text"
+      inputmode="numeric"
+      maxlength="15"
+      placeholder="Enter your UID"
+    >
+
+    <label>REGION</label>
+
+    <select id="region">
+      <option value="ind">India</option>
+      <option value="sg">Singapore</option>
+      <option value="br">Brazil</option>
+    </select>
+
+    <button class="primary" onclick="checkUID()">
+      CHECK ID
+    </button>
+
+    <div id="status" class="status hidden"></div>
+
+  </div>
+
+
+  <!-- PLAYER PROFILE -->
+  <div id="profileCard" class="card hidden">
+
+    <h2>PLAYER INFORMATION</h2>
+
+    <div class="profile">
+
+      <div class="stat">
+        <span>NAME</span>
+        <strong id="playerName">Not available</strong>
       </div>
-      <button class="btn" id="payBtn">CONTINUE TO ASSISTANCE</button>
-    </div>
-  </section>
 
-  <section class="card pay" id="pay">
-    <h2>Assistance Fee</h2>
-    <p class="notice">Fee shown: <b>₹500</b>. This is a service/assistance fee, not a guaranteed unban fee. Final account decisions are made by Garena.</p>
-    <div class="pay-grid">
-      <div>
-        <img class="qr" src="/payment-qr.jpg" alt="UPI payment QR">
-        <p class="notice">UPI ID: <b>jinwoo40054@ptaxis</b></p>
-        <a id="upiLink" class="btn" href="#">PAY ₹500 WITH UPI</a>
+      <div class="stat">
+        <span>UID</span>
+        <strong id="playerUID">-</strong>
       </div>
-      <div>
-        <h3>Official appeal</h3>
-        <p class="notice">After payment, use the official Free Fire Customer Service channel to submit the account request. Keep your UID and any supporting evidence ready.</p>
-        <a class="btn secondary official" target="_blank" rel="noopener" href="https://ffsupportind.garena.com/hc/en-us/">OPEN OFFICIAL SUPPORT</a>
-        <p class="notice">No one can legitimately promise a guaranteed reversal of a Garena ban.</p>
-      </div>
-    </div>
-  </section>
 
-  <div class="footer">AURA FF Support is an independent assistance service and is not affiliated with or endorsed by Garena.</div>
+      <div class="stat">
+        <span>LEVEL</span>
+        <strong>Not available</strong>
+      </div>
+
+      <div class="stat">
+        <span>RANK</span>
+        <strong>Not available</strong>
+      </div>
+
+      <div class="stat">
+        <span>GUILD</span>
+        <strong>Not available</strong>
+      </div>
+
+      <div class="stat">
+        <span>REGION</span>
+        <strong id="playerRegion">-</strong>
+      </div>
+
+    </div>
+
+    <div class="status">
+      Free version can verify the UID format, but it cannot
+      retrieve live Garena player profile information.
+    </div>
+
+    <button class="primary" onclick="openAssistance()">
+      UNBAN ASSISTANCE
+    </button>
+
+  </div>
+
+
+  <!-- ASSISTANCE / PAYMENT -->
+  <div id="paymentCard" class="card hidden">
+
+    <div class="payment-box">
+
+      <h2>UNBAN ASSISTANCE</h2>
+
+      <p class="sub">
+        Assistance service for preparing and submitting an account appeal.
+      </p>
+
+      <div class="fee">₹500</div>
+
+      <p class="sub">
+        Assistance fee only. This is not a Garena fee and does not
+        guarantee that an account will be unbanned.
+      </p>
+
+      <img
+        class="qr"
+        src="/payment-qr.jpg"
+        alt="UPI Payment QR"
+      >
+
+      <div class="upi">
+        <strong>UPI ID</strong><br>
+        jinwoo40054@ptaxis
+      </div>
+
+      <a
+        class="button primary"
+        href="upi://pay?pa=jinwoo40054@ptaxis&pn=AURA%20FF%20Support&am=500&cu=INR"
+      >
+        PAY ₹500 WITH UPI
+      </a>
+
+      <button class="secondary" onclick="paymentRequested()">
+        I HAVE PAID — REQUEST VERIFICATION
+      </button>
+
+      <div id="paymentStatus" class="status hidden"></div>
+
+      <a
+        class="button telegram"
+        href="https://t.me/+tIxc5izrdWExNzE9"
+        target="_blank"
+      >
+        OPEN OFFICIAL SUPPORT
+      </a>
+
+      <p class="warning">
+        Important: No website or person can legitimately guarantee
+        an unban. Final account decisions are made by Garena.
+      </p>
+
+    </div>
+
+  </div>
+
 </div>
+
+
 <script>
-const $=id=>document.getElementById(id);
-$("check").onclick=async()=>{
-  const uid=$("uid").value.trim();
-  const region=$("region").value;
 
-  $("status").textContent="Checking UID…";
-  $("profile").style.display="none";
+async function checkUID() {
 
-  if(!/^\d{5,15}$/.test(uid)){
-    $("status").textContent="Please enter a valid 5–15 digit UID.";
+  const uid = document.getElementById("uid").value.trim();
+  const region = document.getElementById("region").value;
+
+  const status = document.getElementById("status");
+  const profile = document.getElementById("profileCard");
+
+  profile.classList.add("hidden");
+  status.classList.remove("hidden");
+
+  if (!/^[0-9]{5,15}$/.test(uid)) {
+
+    status.innerHTML =
+      "❌ Invalid UID. Please enter a valid numeric UID.";
+
     return;
   }
 
-  try{
-    const r=await fetch(
-      `/api/player?uid=${encodeURIComponent(uid)}&region=${encodeURIComponent(region)}`
+  status.innerHTML = "⏳ Checking UID...";
+
+  try {
+
+    const response = await fetch(
+      "/api/player?uid=" +
+      encodeURIComponent(uid) +
+      "&region=" +
+      encodeURIComponent(region)
     );
 
-    const d=await r.json();
+    const data = await response.json();
 
-    if(!r.ok) throw new Error(d.error||"UID check failed");
+    if (!response.ok || !data.valid) {
 
-    $("nickname").textContent="UID Verified";
-    $("puid").textContent=d.uid;
-    $("level").textContent="Not available";
-    $("rank").textContent="Not available";
-    $("pregion").textContent=d.region;
-    $("likes").textContent="Not available";
-    $("clan").textContent="Not available";
+      status.innerHTML =
+        "❌ UID could not be verified.";
 
-    $("status").textContent="UID format is valid. Player details and ban status cannot be verified here.";
-    $("profile").style.display="block";
-    $("pay").style.display="none";
+      return;
+    }
 
-  }catch(e){
-    $("status").textContent=e.message;
+    document.getElementById("playerUID").textContent = data.uid;
+    document.getElementById("playerRegion").textContent =
+      data.region.toUpperCase();
+
+    document.getElementById("playerName").textContent =
+      "Not available";
+
+    status.innerHTML =
+      "✅ UID format verified.<br>" +
+      "Player profile information is not available in the free version.";
+
+    profile.classList.remove("hidden");
+
+  } catch (error) {
+
+    status.innerHTML =
+      "⚠️ Server connection error. Please try again.";
+
   }
-};
-$("payBtn").onclick=()=>{
-  $("pay").style.display="block";
-  const upi="upi://pay?pa=jinwoo40054%40ptaxis&pn=AURA%20FF%20Support&am=500&cu=INR";
-  $("upiLink").href=upi;
-  $("pay").scrollIntoView({behavior:"smooth"});
-};
+}
+
+
+function openAssistance() {
+
+  document.getElementById("paymentCard")
+    .classList.remove("hidden");
+
+  document.getElementById("paymentCard")
+    .scrollIntoView({
+      behavior: "smooth"
+    });
+}
+
+
+function paymentRequested() {
+
+  const box = document.getElementById("paymentStatus");
+
+  box.classList.remove("hidden");
+
+  box.innerHTML =
+    "✅ Payment verification request received.<br>" +
+    "Please contact support on Telegram with your UID and payment reference. " +
+    "No unban result is shown until the account appeal is actually processed.";
+
+}
+
 </script>
+
 </body>
 </html>
