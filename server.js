@@ -79,7 +79,61 @@ function requireAdmin(req, res, next) {
       error: "Admin authentication required."
     });
   }
+/* ---------------- ADMIN DELETE PAYMENT ---------------- */
 
+app.delete(
+  "/admin/api/payment-verifications/:id",
+  requireAdmin,
+  async (req, res) => {
+
+    const id = String(req.params.id || "");
+
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({
+        error: "Invalid payment id."
+      });
+    }
+
+    const supabaseUrl = process.env.SUPABASE_URL || "";
+    const serviceKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+    try {
+
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/payment_verifications?id=eq.${encodeURIComponent(id)}`,
+        {
+          method: "DELETE",
+          headers: {
+            apikey: serviceKey,
+            Authorization: `Bearer ${serviceKey}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        return res.status(502).json({
+          error: "Could not delete payment."
+        });
+      }
+
+      return res.json({
+        success: true
+      });
+
+    } catch (error) {
+
+      console.error(
+        "Admin payment delete error:",
+        error
+      );
+
+      return res.status(502).json({
+        error: "Could not delete payment."
+      });
+    }
+  }
+);
   next();
 }
 
