@@ -16,119 +16,131 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at top, #24105c 0%, #090616 45%, #03030a 100%);
-      color: #fff;
+        radial-gradient(circle at top, #35104f, #09070d 55%);
+      color: white;
       padding: 20px;
     }
 
     .container {
-      width: 100%;
-      max-width: 650px;
-      margin: 40px auto;
+      max-width: 1000px;
+      margin: auto;
     }
 
     .card {
-      background: rgba(12, 9, 28, 0.95);
-      border: 1px solid rgba(132, 102, 255, 0.35);
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 0 30px rgba(77, 45, 180, 0.2);
+      background: rgba(20, 15, 28, .94);
+      border: 1px solid #49345d;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,.35);
     }
 
-    .logo {
-      text-align: center;
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      color: #9b82ff;
+    h1 {
+      font-size: 25px;
       margin-bottom: 8px;
     }
 
-    .admin-title {
-      text-align: center;
-      color: #aaa4c4;
-      margin-bottom: 25px;
-      font-size: 13px;
-    }
-
-    label {
-      display: block;
-      color: #c8c2df;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #3d3560;
-      background: #090714;
-      color: white;
-      outline: none;
+    h2 {
+      font-size: 20px;
       margin-bottom: 15px;
     }
 
-    button {
-      width: 100%;
-      padding: 14px;
-      border: 0;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 800;
-      margin-top: 8px;
+    .muted {
+      color: #aaa;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
-    .primary {
-      background: linear-gradient(90deg, #6b42ff, #9b6cff);
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #514060;
+      background: #110d17;
       color: white;
+      font-size: 15px;
+    }
+
+    button {
+      background: #6d35d8;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: .9;
     }
 
     .logout {
-      background: #17132b;
-      border: 1px solid #403665;
-      color: #d4ccff;
+      background: #3a293f;
+      margin-top: 15px;
+    }
+
+    .message {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      background: #24182c;
+      color: #ddd;
+      font-size: 14px;
+    }
+
+    .request {
+      border: 1px solid #49345d;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 14px;
+      background: #120d18;
+    }
+
+    .request p {
+      margin: 7px 0;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .label {
+      color: #a989d8;
+      font-weight: bold;
     }
 
     .status {
-      margin-top: 15px;
-      padding: 13px;
-      border-radius: 10px;
-      background: #100d20;
-      border: 1px solid #383052;
-      color: #cfc9e9;
-      font-size: 13px;
-      line-height: 1.5;
+      padding: 8px;
+      margin-top: 10px;
     }
 
-    .hidden {
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .topbar button {
+      width: auto;
+      padding: 10px 18px;
+      margin: 0;
+    }
+
+    #dashboard {
       display: none;
     }
 
-    .panel {
-      margin-top: 18px;
-      padding: 18px;
-      background: #0b0818;
-      border: 1px solid #292341;
-      border-radius: 14px;
+    #loginCard {
+      max-width: 430px;
+      margin: 70px auto;
     }
 
-    .panel h3 {
-      margin-bottom: 8px;
-    }
-
-    .panel p {
-      color: #9d97b5;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .warning {
-      margin-top: 18px;
-      color: #9992ad;
-      font-size: 11px;
-      line-height: 1.5;
+    .empty {
       text-align: center;
+      padding: 30px;
+      color: #aaa;
     }
   </style>
 </head>
@@ -139,79 +151,70 @@
 
   <!-- LOGIN -->
   <div id="loginCard" class="card">
+    <h1>AURA • Admin</h1>
+    <p class="muted">
+      Secure administrator login.
+    </p>
 
-    <div class="logo">AURA • ADMIN</div>
-
-    <div class="admin-title">
-      Private administrator access
-    </div>
-
-    <label>ADMIN PASSWORD</label>
+    <input
+      id="username"
+      type="text"
+      placeholder="Admin username"
+      autocomplete="username"
+    >
 
     <input
       id="password"
       type="password"
-      placeholder="Enter admin password"
+      placeholder="Admin password"
       autocomplete="current-password"
     >
 
-    <button class="primary" onclick="login()">
-      ADMIN LOGIN
-    </button>
+    <button onclick="login()">LOGIN</button>
 
-    <div id="loginStatus" class="status hidden"></div>
-
-    <div class="warning">
-      This page is for authorized administration only.
-    </div>
-
+    <div id="loginMessage" class="message"></div>
   </div>
 
 
   <!-- DASHBOARD -->
-  <div id="dashboard" class="card hidden">
+  <div id="dashboard">
 
-    <div class="logo">AURA • ADMIN</div>
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h1>AURA • Admin Dashboard</h1>
+          <p class="muted">
+            Support request management
+          </p>
+        </div>
 
-    <div class="admin-title">
-      Administrator Dashboard
+        <button class="logout" onclick="logout()">
+          LOGOUT
+        </button>
+      </div>
     </div>
 
-    <div class="panel">
-      <h3>🛡️ Admin Access</h3>
-      <p>
-        Authentication successful. You are inside the private
-        administrator area.
-      </p>
-    </div>
 
-    <div class="panel">
-      <h3>📋 Requests</h3>
-      <p>
-        Request management will be added here. No payment or
-        unban request is automatically marked as verified.
-      </p>
-    </div>
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h2>Support Requests</h2>
+          <p class="muted">
+            Requests submitted from the public website.
+          </p>
+        </div>
 
-    <div class="panel">
-      <h3>💳 Payment Verification</h3>
-      <p>
-        Payment verification must be performed honestly.
-        This dashboard does not create fake payment confirmations.
-      </p>
-    </div>
+        <button onclick="loadRequests()">
+          REFRESH
+        </button>
+      </div>
 
-    <div class="panel">
-      <h3>📨 Support</h3>
-      <p>
-        Use the official support channel to handle genuine
-        assistance requests.
-      </p>
+      <div id="requests">
+        <div class="empty">
+          Loading requests...
+        </div>
+      </div>
     </div>
-
-    <button class="logout" onclick="logout()">
-      LOG OUT
-    </button>
 
   </div>
 
@@ -222,21 +225,17 @@
 
 async function login() {
 
+  const username =
+    document.getElementById("username").value.trim();
+
   const password =
     document.getElementById("password").value;
 
-  const status =
-    document.getElementById("loginStatus");
+  const message =
+    document.getElementById("loginMessage");
 
-  if (!password) {
-    status.classList.remove("hidden");
-    status.textContent =
-      "Please enter your admin password.";
-    return;
-  }
-
-  status.classList.remove("hidden");
-  status.textContent = "Checking...";
+  message.style.display = "block";
+  message.textContent = "Checking login...";
 
   try {
 
@@ -246,48 +245,252 @@ async function login() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        password: password
+        username,
+        password
       })
     });
 
     const data = await response.json();
 
-    if (!response.ok || !data.success) {
-
-      status.textContent =
-        "❌ Invalid admin password.";
-
+    if (!response.ok) {
+      message.textContent =
+        data.error || "Login failed.";
       return;
     }
 
     document.getElementById("loginCard")
-      .classList.add("hidden");
+      .style.display = "none";
 
     document.getElementById("dashboard")
-      .classList.remove("hidden");
+      .style.display = "block";
+
+    await loadRequests();
 
   } catch (error) {
 
-    status.textContent =
-      "⚠️ Server error. Please try again.";
-
+    message.textContent =
+      "Connection error. Please try again.";
   }
 }
 
 
-function logout() {
+async function checkSession() {
+
+  try {
+
+    const response =
+      await fetch("/admin/api/me");
+
+    if (response.ok) {
+
+      document.getElementById("loginCard")
+        .style.display = "none";
+
+      document.getElementById("dashboard")
+        .style.display = "block";
+
+      await loadRequests();
+    }
+
+  } catch (error) {
+    console.log("Session check failed.");
+  }
+}
+
+
+async function logout() {
+
+  try {
+    await fetch("/admin/logout", {
+      method: "POST"
+    });
+  } catch (error) {}
 
   document.getElementById("dashboard")
-    .classList.add("hidden");
+    .style.display = "none";
 
   document.getElementById("loginCard")
-    .classList.remove("hidden");
+    .style.display = "block";
 
   document.getElementById("password").value = "";
-
-  document.getElementById("loginStatus")
-    .classList.add("hidden");
 }
+
+
+async function loadRequests() {
+
+  const box =
+    document.getElementById("requests");
+
+  box.innerHTML =
+    '<div class="empty">Loading requests...</div>';
+
+  try {
+
+    const response =
+      await fetch("/admin/api/requests");
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+
+      box.innerHTML =
+        `<div class="empty">${escapeHtml(
+          data.error || "Could not load requests."
+        )}</div>`;
+
+      return;
+    }
+
+    const requests =
+      data.requests || [];
+
+    if (!requests.length) {
+
+      box.innerHTML =
+        '<div class="empty">No support requests yet.</div>';
+
+      return;
+    }
+
+    box.innerHTML =
+      requests.map(renderRequest).join("");
+
+  } catch (error) {
+
+    box.innerHTML =
+      '<div class="empty">Could not connect to server.</div>';
+  }
+}
+
+
+function renderRequest(item) {
+
+  const date =
+    item.created_at
+      ? new Date(item.created_at).toLocaleString()
+      : "Unknown";
+
+  return `
+    <div class="request">
+
+      <p>
+        <span class="label">Request ID:</span>
+        ${escapeHtml(String(item.id))}
+      </p>
+
+      <p>
+        <span class="label">UID:</span>
+        ${escapeHtml(item.uid || "")}
+      </p>
+
+      <p>
+        <span class="label">Region:</span>
+        ${escapeHtml(item.region || "")}
+      </p>
+
+      <p>
+        <span class="label">Issue:</span><br>
+        ${escapeHtml(item.issue || "")}
+      </p>
+
+      <p>
+        <span class="label">Contact:</span>
+        ${escapeHtml(item.contact || "Not provided")}
+      </p>
+
+      <p>
+        <span class="label">Created:</span>
+        ${escapeHtml(date)}
+      </p>
+
+      <p>
+        <span class="label">Status:</span>
+      </p>
+
+      <select
+        class="status"
+        onchange="updateStatus(${Number(item.id)}, this.value)"
+      >
+        ${statusOption("pending", item.status)}
+        ${statusOption("reviewing", item.status)}
+        ${statusOption("resolved", item.status)}
+        ${statusOption("rejected", item.status)}
+      </select>
+
+    </div>
+  `;
+}
+
+
+function statusOption(value, current) {
+
+  const selected =
+    value === current ? "selected" : "";
+
+  return `
+    <option value="${value}" ${selected}>
+      ${value.toUpperCase()}
+    </option>
+  `;
+}
+
+
+async function updateStatus(id, status) {
+
+  try {
+
+    const response =
+      await fetch(
+        `/admin/api/requests/${encodeURIComponent(id)}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            status
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+
+      alert(
+        data.error ||
+        "Could not update request."
+      );
+
+      await loadRequests();
+      return;
+    }
+
+  } catch (error) {
+
+    alert(
+      "Connection error while updating request."
+    );
+
+    await loadRequests();
+  }
+}
+
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+checkSession();
 
 </script>
 
