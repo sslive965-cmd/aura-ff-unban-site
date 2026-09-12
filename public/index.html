@@ -75,20 +75,41 @@ label{display:block;color:#c9d2df;font-size:13px;margin-bottom:8px}input,select{
 <script>
 const $=id=>document.getElementById(id);
 $("check").onclick=async()=>{
-  const uid=$("uid").value.trim(), region=$("region").value;
-  $("status").textContent="Checking player details…"; $("profile").style.display="none";
-  if(!/^\d{5,15}$/.test(uid)){ $("status").textContent="Please enter a valid 5–15 digit UID."; return; }
+  const uid=$("uid").value.trim();
+  const region=$("region").value;
+
+  $("status").textContent="Checking UID…";
+  $("profile").style.display="none";
+
+  if(!/^\d{5,15}$/.test(uid)){
+    $("status").textContent="Please enter a valid 5–15 digit UID.";
+    return;
+  }
+
   try{
-    const r=await fetch(`/api/player?uid=${encodeURIComponent(uid)}&region=${encodeURIComponent(region)}`);
+    const r=await fetch(
+      `/api/player?uid=${encodeURIComponent(uid)}&region=${encodeURIComponent(region)}`
+    );
+
     const d=await r.json();
-    if(!r.ok) throw new Error(d.error||"Lookup failed");
-    $("nickname").textContent=d.nickname;
-    $("puid").textContent=d.uid; $("level").textContent=d.level; $("rank").textContent=d.rank;
-    $("pregion").textContent=d.region; $("likes").textContent=d.likes; $("clan").textContent=d.clan;
-    $("status").textContent="Player details loaded.";
+
+    if(!r.ok) throw new Error(d.error||"UID check failed");
+
+    $("nickname").textContent="UID Verified";
+    $("puid").textContent=d.uid;
+    $("level").textContent="Not available";
+    $("rank").textContent="Not available";
+    $("pregion").textContent=d.region;
+    $("likes").textContent="Not available";
+    $("clan").textContent="Not available";
+
+    $("status").textContent="UID format is valid. Player details and ban status cannot be verified here.";
     $("profile").style.display="block";
     $("pay").style.display="none";
-  }catch(e){$("status").textContent=e.message}
+
+  }catch(e){
+    $("status").textContent=e.message;
+  }
 };
 $("payBtn").onclick=()=>{
   $("pay").style.display="block";
