@@ -487,16 +487,11 @@ app.get("/api/health", (_req, res) => {
     ok: true
   });
 });
-
-/* ---------------- PROTECT ADMIN PAGE ---------------- */
+/* ---------------- ADMIN PAGE ---------------- */
 
 app.get(
   ["/admin", "/admin.html"],
-  (req, res) => {
-    if (!validAdminSession(req)) {
-      return res.status(404).send("Not found");
-    }
-
+  (_req, res) => {
     res.sendFile(
       path.join(
         __dirname,
