@@ -310,7 +310,7 @@ app.post("/api/payment-request", async (req, res) => {
 
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/payment_verifications?verification_token=eq.${encodeURIComponent(verificationToken)}`,
+      `${supabaseUrl}/rest/v1/payment_verifications?request_token=eq.${encodeURIComponent(verificationToken)}`,
       {
         method: "PATCH",
         headers: {
@@ -399,7 +399,7 @@ app.get("/api/payment-status", async (req, res) => {
 
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/payment_verifications?verification_token=eq.${encodeURIComponent(token)}&select=status`,
+      `${supabaseUrl}/rest/v1/payment_verifications?request_token=eq.${encodeURIComponent(token)}&select=status`,
       {
         headers: {
           apikey: serviceKey,
@@ -464,7 +464,7 @@ app.post("/api/support-request", async (req, res) => {
   try {
 
     const paymentResponse = await fetch(
-      `${supabaseUrl}/rest/v1/payment_verifications?verification_token=eq.${encodeURIComponent(verificationToken)}&select=*`,
+      `${supabaseUrl}/rest/v1/payment_verifications?request_token=eq.${encodeURIComponent(verificationToken)}&select=*`,
       {
         headers: {
           apikey: serviceKey,
