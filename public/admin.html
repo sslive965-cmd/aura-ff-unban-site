@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA • Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #24105c 0%, #090616 45%, #03030a 100%);
+      color: #fff;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      margin: 40px auto;
+    }
+
+    .card {
+      background: rgba(12, 9, 28, 0.95);
+      border: 1px solid rgba(132, 102, 255, 0.35);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 0 30px rgba(77, 45, 180, 0.2);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #9b82ff;
+      margin-bottom: 8px;
+    }
+
+    .admin-title {
+      text-align: center;
+      color: #aaa4c4;
+      margin-bottom: 25px;
+      font-size: 13px;
+    }
+
+    label {
+      display: block;
+      color: #c8c2df;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #3d3560;
+      background: #090714;
+      color: white;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .primary {
+      background: linear-gradient(90deg, #6b42ff, #9b6cff);
+      color: white;
+    }
+
+    .logout {
+      background: #17132b;
+      border: 1px solid #403665;
+      color: #d4ccff;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 13px;
+      border-radius: 10px;
+      background: #100d20;
+      border: 1px solid #383052;
+      color: #cfc9e9;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .panel {
+      margin-top: 18px;
+      padding: 18px;
+      background: #0b0818;
+      border: 1px solid #292341;
+      border-radius: 14px;
+    }
+
+    .panel h3 {
+      margin-bottom: 8px;
+    }
+
+    .panel p {
+      color: #9d97b5;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .warning {
+      margin-top: 18px;
+      color: #9992ad;
+      font-size: 11px;
+      line-height: 1.5;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LOGIN -->
+  <div id="loginCard" class="card">
+
+    <div class="logo">AURA • ADMIN</div>
+
+    <div class="admin-title">
+      Private administrator access
+    </div>
+
+    <label>ADMIN PASSWORD</label>
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Enter admin password"
+      autocomplete="current-password"
+    >
+
+    <button class="primary" onclick="login()">
+      ADMIN LOGIN
+    </button>
+
+    <div id="loginStatus" class="status hidden"></div>
+
+    <div class="warning">
+      This page is for authorized administration only.
+    </div>
+
+  </div>
+
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="card hidden">
+
+    <div class="logo">AURA • ADMIN</div>
+
+    <div class="admin-title">
+      Administrator Dashboard
+    </div>
+
+    <div class="panel">
+      <h3>🛡️ Admin Access</h3>
+      <p>
+        Authentication successful. You are inside the private
+        administrator area.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>📋 Requests</h3>
+      <p>
+        Request management will be added here. No payment or
+        unban request is automatically marked as verified.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>💳 Payment Verification</h3>
+      <p>
+        Payment verification must be performed honestly.
+        This dashboard does not create fake payment confirmations.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>📨 Support</h3>
+      <p>
+        Use the official support channel to handle genuine
+        assistance requests.
+      </p>
+    </div>
+
+    <button class="logout" onclick="logout()">
+      LOG OUT
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+async function login() {
+
+  const password =
+    document.getElementById("password").value;
+
+  const status =
+    document.getElementById("loginStatus");
+
+  if (!password) {
+    status.classList.remove("hidden");
+    status.textContent =
+      "Please enter your admin password.";
+    return;
+  }
+
+  status.classList.remove("hidden");
+  status.textContent = "Checking...";
+
+  try {
+
+    const response = await fetch("/admin/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        password: password
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+
+      status.textContent =
+        "❌ Invalid admin password.";
+
+      return;
+    }
+
+    document.getElementById("loginCard")
+      .classList.add("hidden");
+
+    document.getElementById("dashboard")
+      .classList.remove("hidden");
+
+  } catch (error) {
+
+    status.textContent =
+      "⚠️ Server error. Please try again.";
+
+  }
+}
+
+
+function logout() {
+
+  document.getElementById("dashboard")
+    .classList.add("hidden");
+
+  document.getElementById("loginCard")
+    .classList.remove("hidden");
+
+  document.getElementById("password").value = "";
+
+  document.getElementById("loginStatus")
+    .classList.add("hidden");
+}
+
+</script>
+
+</body>
+</html>
