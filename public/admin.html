@@ -194,7 +194,26 @@
       </div>
     </div>
 
+<div class="card">
+  <div class="topbar">
+    <div>
+      <h2>Payment Verifications</h2>
+      <p class="muted">
+        Pending payment verification requests.
+      </p>
+    </div>
 
+    <button onclick="loadPayments()">
+      REFRESH
+    </button>
+  </div>
+
+  <div id="payments">
+    <div class="empty">
+      Loading payment requests...
+    </div>
+  </div>
+</div>
     <div class="card">
       <div class="topbar">
         <div>
@@ -265,7 +284,7 @@ async function login() {
       .style.display = "block";
 
     await loadRequests();
-
+await loadPayments();
   } catch (error) {
 
     message.textContent =
@@ -290,6 +309,7 @@ async function checkSession() {
         .style.display = "block";
 
       await loadRequests();
+      await loadPayments();
     }
 
   } catch (error) {
@@ -488,7 +508,82 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+async function loadPayments() {
+  const box = document.getElementById("payments");
+  if (!box) return;
 
+  box.innerHTML =
+    '<div class="empty">Loading payment requests...</div>';
+
+  try {
+    const response =
+      await fetch("/admin/api/payment-verifications");
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      box.innerHTML =
+        `<div class="empty">${escapeHtml(
+          data.error || "Could not load payments."
+        )}</div>`;
+      return;
+    }
+
+    const payments = data.payments || [];
+
+    if (!payments.length) {
+      box.innerHTML =
+        '<div class="empty">No payment requests yet.</div>';
+      return;
+    }
+
+    box.innerHTML = payments.map(renderPayment).join("");
+  } catch (error) {
+    box.innerHTML =
+      '<div class="empty">Could not connect to server.</div>';
+  }
+}
+
+function renderPayment(item) {
+  return `
+    <div class="request">
+      <p><span class="label">ID:</span> ${escapeHtml(String(item.id))}</p>
+      <p><span class="label">UID:</span> ${escapeHtml(item.uid || "")}</p>
+      <p><span class="label">Region:</span> ${escapeHtml(item.region || "")}</p>
+      <p><span class="label">Status:</span> ${escapeHtml(item.status || "")}</p>
+
+      <button onclick="updatePaymentStatus(${Number(item.id)}, 'verified')">
+        VERIFY
+      </button>
+
+      <button onclick="updatePaymentStatus(${Number(item.id)}, 'rejected')">
+        REJECT
+      </button>
+    </div>
+  `;
+}
+
+async function updatePaymentStatus(id, status) {
+  const response = await fetch(
+    `/admin/api/payment-verifications/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status })
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    alert(data.error || "Update failed");
+    return;
+  }
+
+  await loadPayments();
+}
 
 checkSession();
 
