@@ -429,8 +429,61 @@
 </div>
 
 <script>
+async function submitSupportRequest() {
+  const uid = document.getElementById("supportUID").value.trim();
+  const region = document.getElementById("supportRegion").value;
+  const issue = document.getElementById("supportIssue").value.trim();
+  const contact = document.getElementById("supportContact").value.trim();
+  const status = document.getElementById("supportStatus");
 
-<script>
+  status.classList.remove("hidden");
+  status.textContent = "Submitting request...";
+
+  if (!/^[0-9]{5,15}$/.test(uid)) {
+    status.textContent = "Please enter a valid 5–15 digit UID.";
+    return;
+  }
+
+  if (!issue) {
+    status.textContent = "Please describe your issue.";
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/support-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        uid,
+        region,
+        issue,
+        contact
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      status.textContent =
+        data.error || "Could not submit request.";
+      return;
+    }
+
+    status.textContent =
+      "✅ Support request submitted successfully.";
+
+    document.getElementById("supportUID").value = "";
+    document.getElementById("supportIssue").value = "";
+    document.getElementById("supportContact").value = "";
+
+  } catch (error) {
+    status.textContent =
+      "⚠️ Connection error. Please try again.";
+  }
+  }
+
 
 async function checkUID() {
 
