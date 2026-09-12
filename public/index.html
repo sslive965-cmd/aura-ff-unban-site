@@ -77,7 +77,7 @@ const $=id=>document.getElementById(id);
 $("check").onclick=async()=>{
   const uid=$("uid").value.trim(), region=$("region").value;
   $("status").textContent="Checking player details…"; $("profile").style.display="none";
-  if(!/^\\d{5,15}$/.test(uid)){ $("status").textContent="Please enter a valid 5–15 digit UID."; return; }
+  if(!/^\d{5,15}$/.test(uid)){ $("status").textContent="Please enter a valid 5–15 digit UID."; return; }
   try{
     const r=await fetch(`/api/player?uid=${encodeURIComponent(uid)}&region=${encodeURIComponent(region)}`);
     const d=await r.json();
