@@ -228,7 +228,7 @@ app.post("/api/payment-start", async (req, res) => {
           amount: 500,
           contact: contact || null,
           status: "pending",
-          verification_token: verificationToken,
+          request_token: verificationToken,
           nickname: nickname || null,
           device: device || null,
           ban_reason: banReason || null,
