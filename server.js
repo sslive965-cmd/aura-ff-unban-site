@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.set("trust proxy", 1);
-app.use(express.json({ limit: "20kb" }));
+app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20kb" }));
 
 const sessions = new Map();
@@ -152,38 +152,49 @@ app.get("/api/player", (req, res) => {
   });
 });
 
-/* ---------------- SUPPORT REQUEST ---------------- */
+/* ---------------- PAYMENT START ---------------- */
 
-app.post("/api/support-request", async (req, res) => {
+app.post("/api/payment-start", async (req, res) => {
   const uid = String(req.body.uid || "").trim();
-  const region = String(req.body.region || "")
-    .trim()
-    .toLowerCase();
-
-  const issue = String(req.body.issue || "").trim();
+  const nickname = String(req.body.nickname || "").trim();
+  const device = String(req.body.device || "").trim();
+  const region = String(req.body.region || "").trim().toLowerCase();
+  const banReason = String(req.body.banReason || "").trim();
+  const idLevel = String(req.body.idLevel || "").trim();
   const contact = String(req.body.contact || "").trim();
+  const evidence = String(req.body.evidence || "");
 
   if (!/^\d{5,15}$/.test(uid)) {
-    return res.status(400).json({
-      error: "Invalid UID."
-    });
+    return res.status(400).json({ error: "Invalid UID." });
+  }
+
+  if (!nickname || nickname.length > 100) {
+    return res.status(400).json({ error: "Invalid nickname." });
+  }
+
+  if (!device || device.length > 100) {
+    return res.status(400).json({ error: "Invalid device." });
   }
 
   if (!["ind", "sg", "br"].includes(region)) {
-    return res.status(400).json({
-      error: "Unsupported region."
-    });
+    return res.status(400).json({ error: "Unsupported region." });
   }
 
-  if (!issue || issue.length > 1000) {
-    return res.status(400).json({
-      error: "Please describe the issue."
-    });
+  if (!banReason || banReason.length > 1000) {
+    return res.status(400).json({ error: "Please describe the ban reason." });
+  }
+
+  if (!idLevel || idLevel.length > 20) {
+    return res.status(400).json({ error: "Invalid ID level." });
   }
 
   if (contact.length > 200) {
+    return res.status(400).json({ error: "Contact information is too long." });
+  }
+
+  if (evidence && evidence.length > 1500000) {
     return res.status(400).json({
-      error: "Contact information is too long."
+      error: "Screenshot is too large."
     });
   }
 
@@ -193,14 +204,16 @@ app.post("/api/support-request", async (req, res) => {
 
   if (!supabaseUrl || !serviceKey) {
     return res.status(503).json({
-      error:
-        "Support request storage is not configured yet."
+      error: "Payment system is not configured."
     });
   }
 
+  const verificationToken =
+    crypto.randomBytes(32).toString("hex");
+
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/support_requests`,
+      `${supabaseUrl}/rest/v1/payment_verifications`,
       {
         method: "POST",
         headers: {
@@ -212,40 +225,465 @@ app.post("/api/support-request", async (req, res) => {
         body: JSON.stringify({
           uid,
           region,
-          issue,
-          contact: contact || null
+          amount: 500,
+          contact: contact || null,
+          status: "pending",
+          verification_token: verificationToken,
+          nickname: nickname || null,
+          device: device || null,
+          ban_reason: banReason || null,
+          id_level: idLevel || null
         })
       }
     );
 
     if (!response.ok) {
       console.error(
-        "Supabase insert failed:",
+        "Payment request insert failed:",
         await response.text()
       );
 
       return res.status(502).json({
-        error: "Could not save the request."
+        error: "Could not start the request."
+      });
+    }
+
+    await sendTelegramNotification(
+      `🔔 New AURA FF support request started\n\n` +
+      `UID: ${uid}\n` +
+      `Nickname: ${nickname}\n` +
+      `Device: ${device}\n` +
+      `Region: ${region.toUpperCase()}\n` +
+      `ID Level: ${idLevel}\n` +
+      `Status: Payment Pending\n\n` +
+      `Customer has reached the ₹500 assistance payment step.`
+    );
+
+    return res.status(201).json({
+      success: true,
+      verificationToken
+    });
+
+  } catch (error) {
+    console.error(
+      "Payment start error:",
+      error
+    );
+
+    return res.status(502).json({
+      error: "Could not start the request."
+    });
+  }
+});
+
+
+/* ---------------- PAYMENT REQUEST ---------------- */
+
+app.post("/api/payment-request", async (req, res) => {
+  const verificationToken =
+    String(req.body.verificationToken || "").trim();
+
+  const paymentReference =
+    String(req.body.paymentReference || "").trim();
+
+  if (!verificationToken) {
+    return res.status(400).json({
+      error: "Invalid verification token."
+    });
+  }
+
+  if (!paymentReference || paymentReference.length > 100) {
+    return res.status(400).json({
+      error: "Please enter a valid payment reference."
+    });
+  }
+
+  const supabaseUrl = process.env.SUPABASE_URL || "";
+  const serviceKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+  if (!supabaseUrl || !serviceKey) {
+    return res.status(503).json({
+      error: "Payment system is not configured."
+    });
+  }
+
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/payment_verifications?verification_token=eq.${encodeURIComponent(verificationToken)}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation"
+        },
+        body: JSON.stringify({
+          payment_reference: paymentReference,
+          status: "pending",
+          updated_at: new Date().toISOString()
+        })
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        "Payment reference update failed:",
+        await response.text()
+      );
+
+      return res.status(502).json({
+        error: "Could not submit payment verification."
       });
     }
 
     const rows = await response.json();
 
-    return res.status(201).json({
+    if (!rows.length) {
+      return res.status(404).json({
+        error: "Payment request not found."
+      });
+    }
+
+    const request = rows[0];
+
+    await sendTelegramNotification(
+      `💳 Payment verification requested\n\n` +
+      `UID: ${request.uid}\n` +
+      `Region: ${String(request.region).toUpperCase()}\n` +
+      `Amount: ₹${request.amount}\n` +
+      `Payment Reference: ${paymentReference}\n\n` +
+      `⚠️ Please manually verify the actual payment before approving.`
+    );
+
+    return res.json({
       success: true,
-      request: rows[0] || null
+      status: "pending"
     });
+
   } catch (error) {
     console.error(
-      "Support request error:",
+      "Payment verification request error:",
       error
     );
 
     return res.status(502).json({
-      error: "Could not save the request."
+      error: "Could not submit payment verification."
     });
   }
 });
+
+
+/* ---------------- PAYMENT STATUS ---------------- */
+
+app.get("/api/payment-status", async (req, res) => {
+  const token =
+    String(req.query.token || "").trim();
+
+  if (!token) {
+    return res.status(400).json({
+      error: "Missing verification token."
+    });
+  }
+
+  const supabaseUrl = process.env.SUPABASE_URL || "";
+  const serviceKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+  if (!supabaseUrl || !serviceKey) {
+    return res.status(503).json({
+      error: "Payment system is not configured."
+    });
+  }
+
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/payment_verifications?verification_token=eq.${encodeURIComponent(token)}&select=status`,
+      {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      return res.status(502).json({
+        error: "Could not check payment status."
+      });
+    }
+
+    const rows = await response.json();
+
+    if (!rows.length) {
+      return res.status(404).json({
+        error: "Payment request not found."
+      });
+    }
+
+    return res.json({
+      status: rows[0].status
+    });
+
+  } catch (error) {
+    console.error(
+      "Payment status error:",
+      error
+    );
+
+    return res.status(502).json({
+      error: "Could not check payment status."
+    });
+  }
+});
+
+
+/* ---------------- FINAL SUPPORT REQUEST ---------------- */
+
+app.post("/api/support-request", async (req, res) => {
+  const verificationToken =
+    String(req.body.verificationToken || "").trim();
+
+  if (!verificationToken) {
+    return res.status(400).json({
+      error: "Payment verification is required."
+    });
+  }
+
+  const supabaseUrl = process.env.SUPABASE_URL || "";
+  const serviceKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+  if (!supabaseUrl || !serviceKey) {
+    return res.status(503).json({
+      error: "Support system is not configured."
+    });
+  }
+
+  try {
+
+    const paymentResponse = await fetch(
+      `${supabaseUrl}/rest/v1/payment_verifications?verification_token=eq.${encodeURIComponent(verificationToken)}&select=*`,
+      {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`
+        }
+      }
+    );
+
+    if (!paymentResponse.ok) {
+      return res.status(502).json({
+        error: "Could not verify payment status."
+      });
+    }
+
+    const payments = await paymentResponse.json();
+
+    if (!payments.length) {
+      return res.status(404).json({
+        error: "Payment request not found."
+      });
+    }
+
+    const payment = payments[0];
+
+    if (payment.status !== "verified") {
+      return res.status(403).json({
+        error: "Payment has not been verified by admin yet."
+      });
+    }
+
+    const evidence =
+      String(req.body.evidence || "");
+
+    if (evidence && evidence.length > 1500000) {
+      return res.status(400).json({
+        error: "Screenshot is too large."
+      });
+    }
+
+    const supportResponse = await fetch(
+      `${supabaseUrl}/rest/v1/support_requests`,
+      {
+        method: "POST",
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation"
+        },
+        body: JSON.stringify({
+          uid: payment.uid,
+          region: payment.region,
+          issue: payment.ban_reason,
+          contact: payment.contact || null,
+          nickname: payment.nickname || null,
+          device: payment.device || null,
+          ban_reason: payment.ban_reason || null,
+          id_level: payment.id_level || null,
+          evidence_data: evidence || null,
+          status: "pending"
+        })
+      }
+    );
+
+    if (!supportResponse.ok) {
+      console.error(
+        "Final support request failed:",
+        await supportResponse.text()
+      );
+
+      return res.status(502).json({
+        error: "Could not submit support request."
+      });
+    }
+
+    const rows = await supportResponse.json();
+
+    await sendTelegramNotification(
+      `📨 Final AURA FF support request submitted\n\n` +
+      `UID: ${payment.uid}\n` +
+      `Region: ${String(payment.region).toUpperCase()}\n` +
+      `Payment: Verified\n` +
+      `Status: Support Request Pending`
+    );
+
+    return res.status(201).json({
+      success: true,
+      request: rows[0] || null
+    });
+
+  } catch (error) {
+    console.error(
+      "Final support request error:",
+      error
+    );
+
+    return res.status(502).json({
+      error: "Could not submit support request."
+    });
+  }
+});
+
+
+/* ---------------- ADMIN PAYMENT VERIFICATIONS ---------------- */
+
+app.get(
+  "/admin/api/payment-verifications",
+  requireAdmin,
+  async (_req, res) => {
+
+    const supabaseUrl = process.env.SUPABASE_URL || "";
+    const serviceKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+    try {
+
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/payment_verifications?select=*&order=created_at.desc&limit=100`,
+        {
+          headers: {
+            apikey: serviceKey,
+            Authorization: `Bearer ${serviceKey}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        return res.status(502).json({
+          error: "Could not load payment verifications."
+        });
+      }
+
+      res.json({
+        payments: await response.json()
+      });
+
+    } catch (error) {
+
+      console.error(
+        "Admin payment fetch error:",
+        error
+      );
+
+      res.status(502).json({
+        error: "Could not load payment verifications."
+      });
+    }
+  }
+);
+
+
+/* ---------------- ADMIN VERIFY / REJECT PAYMENT ---------------- */
+
+app.patch(
+  "/admin/api/payment-verifications/:id",
+  requireAdmin,
+  async (req, res) => {
+
+    const id = String(req.params.id || "");
+    const status = String(req.body.status || "");
+
+    if (
+      !/^\d+$/.test(id) ||
+      !["verified", "rejected"].includes(status)
+    ) {
+      return res.status(400).json({
+        error: "Invalid payment update."
+      });
+    }
+
+    const supabaseUrl = process.env.SUPABASE_URL || "";
+    const serviceKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+    try {
+
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/payment_verifications?id=eq.${encodeURIComponent(id)}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: serviceKey,
+            Authorization: `Bearer ${serviceKey}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation"
+          },
+          body: JSON.stringify({
+            status,
+            updated_at: new Date().toISOString()
+          })
+        }
+      );
+
+      if (!response.ok) {
+        return res.status(502).json({
+          error: "Could not update payment status."
+        });
+      }
+
+      const rows = await response.json();
+
+      return res.json({
+        success: true,
+        payment: rows[0] || null
+      });
+
+    } catch (error) {
+
+      console.error(
+        "Admin payment update error:",
+        error
+      );
+
+      return res.status(502).json({
+        error: "Could not update payment status."
+      });
+    }
+  }
+);
 
 /* ---------------- ADMIN LOGIN ---------------- */
 
