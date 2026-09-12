@@ -373,7 +373,62 @@
   </div>
 
 </div>
+</div>
 
+<!-- SUPPORT REQUEST -->
+<div id="supportCard" class="card">
+
+  <h2>SUPPORT REQUEST</h2>
+
+  <p class="sub">
+    Submit your account-support request. Our team can review
+    the information and guide you through the official appeal process.
+  </p>
+
+  <label>PLAYER UID</label>
+  <input
+    id="supportUID"
+    type="text"
+    inputmode="numeric"
+    maxlength="15"
+    placeholder="Enter your UID"
+  >
+
+  <label>REGION</label>
+  <select id="supportRegion">
+    <option value="ind">India</option>
+    <option value="sg">Singapore</option>
+    <option value="br">Brazil</option>
+  </select>
+
+  <label>YOUR ISSUE</label>
+  <textarea
+    id="supportIssue"
+    maxlength="1000"
+    placeholder="Describe your account issue..."
+    style="width:100%;min-height:120px;padding:14px;border-radius:12px;border:1px solid #3d3560;background:#090714;color:white;outline:none;margin-bottom:15px;resize:vertical;"
+  ></textarea>
+
+  <label>CONTACT (OPTIONAL)</label>
+  <input
+    id="supportContact"
+    type="text"
+    maxlength="200"
+    placeholder="Telegram username or other contact"
+  >
+
+  <button
+    class="primary"
+    onclick="submitSupportRequest()"
+  >
+    SUBMIT SUPPORT REQUEST
+  </button>
+
+  <div id="supportStatus" class="status hidden"></div>
+
+</div>
+
+<script>
 
 <script>
 
