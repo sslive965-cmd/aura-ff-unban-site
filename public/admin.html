@@ -559,6 +559,9 @@ function renderPayment(item) {
       <button onclick="updatePaymentStatus(${Number(item.id)}, 'rejected')">
         REJECT
       </button>
+      <button onclick="deletePayment(${Number(item.id)})">
+  DELETE
+</button>
     </div>
   `;
 }
@@ -584,7 +587,28 @@ async function updatePaymentStatus(id, status) {
 
   await loadPayments();
 }
+async function deletePayment(id) {
 
+  if (!confirm("Delete this payment request?")) {
+    return;
+  }
+
+  const response = await fetch(
+    `/admin/api/payment-verifications/${id}`,
+    {
+      method: "DELETE"
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    alert(data.error || "Delete failed");
+    return;
+  }
+
+  await loadPayments();
+}
 checkSession();
 
 </script>
